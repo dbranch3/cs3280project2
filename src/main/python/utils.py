@@ -19,7 +19,7 @@ def is_ipv6(raw_input):
 
     output = True
     expanded_ipv6_address = expand_ipv6_address(raw_input)
-    ipv6_regex = re.compile(r'^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$')
+    ipv6_regex = re.compile(r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$')
     matched = ipv6_regex.match(expanded_ipv6_address)
 
     if matched == None:
@@ -42,23 +42,6 @@ def is_valid_subnet_mask(raw_input):
         output = True
 
     return output
-
-def calculate_subnet_ipv4(ip_address, subnet_mask):
-    ipv4_regex = re.compile(r'^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$')
-    ip_segments = ipv4_regex.findall(ip_address)[0]
-    subnet_mask_segments = ipv4_regex.findall(subnet_mask)[0]
-    binary_subnet_segments = []
-
-    for i in range(4):
-        integer_ip_segment = int(ip_segments[i])
-        integer_subnet_segment = int(subnet_mask_segments[i])
-        result_of_AND_operation = integer_ip_segment & integer_subnet_segment
-        string_form = str(result_of_AND_operation)
-        binary_subnet_segments.append(string_form)
-
-    string_representation = ".".join(binary_subnet_segments)
-
-    return string_representation
 
 def expand_ipv6_address(ip_address):
     ip_address_with_placeholder = ip_address.replace("::", ":zeroes:", 1)
@@ -107,6 +90,41 @@ def get_ipv6_subnet_mask(prefix_length):
 
     return ":".join(grouping)
     
-#def calculate_subnet_ipv6(ip_address, prefix_length):
-    #ipv6_mask = get_ipv6_subnet_mask(prefix_length)
+def calculate_subnet_ipv4(ip_address, subnet_mask):
+    ipv4_regex = re.compile(r'^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$')
+    ip_segments = ipv4_regex.findall(ip_address)[0]
+    subnet_mask_segments = ipv4_regex.findall(subnet_mask)[0]
+    binary_subnet_segments = []
 
+    for i in range(4):
+        integer_ip_segment = int(ip_segments[i])
+        integer_subnet_segment = int(subnet_mask_segments[i])
+        result_of_AND_operation = integer_ip_segment & integer_subnet_segment
+        string_form = str(result_of_AND_operation)
+        binary_subnet_segments.append(string_form)
+
+    string_representation = ".".join(binary_subnet_segments)
+
+    return string_representation
+
+def calculate_subnet_ipv6(ip_address, prefix_length):
+    expanded_ipv6_address = expand_ipv6_address(ip_address)
+    ipv6_mask = get_ipv6_subnet_mask(prefix_length)
+    ipv6_mask_segments = ipv6_mask.split(":")
+    ip_segments = expanded_ipv6_address.split(":")
+    network_portion_segments = []
+
+    print(ip_segments)
+    print(ipv6_mask_segments)
+
+    for i in range(8):
+        integer_ip_segment = int(ip_segments[i], 16)
+        integer_subnet_segment = int(ipv6_mask_segments[i], 16)
+        result_of_AND_operation = integer_ip_segment & integer_subnet_segment
+        hex_form = hex(result_of_AND_operation)
+        string_form = str(hex_form).replace("0x", "", 1)
+        network_portion_segments.append(string_form)
+
+    string_representation = expand_ipv6_address(":".join(network_portion_segments))
+
+    return string_representation
