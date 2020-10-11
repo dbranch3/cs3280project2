@@ -27,6 +27,23 @@ def is_ipv6(raw_input):
 
     return output
 
+'''
+Returns the IP version: IPV4 or IPV6
+Returns None for invalid IP Address
+'''
+def get_ip_version(raw_input):
+    if (raw_input == None):
+        raise ValueError("Input cannot be none")
+
+    output = None
+
+    if is_ipv4(raw_input):
+        output = "IPV4"
+    elif is_ipv6(raw_input):
+        output = "IPV6"
+
+    return output
+
 def is_valid_subnet_mask(raw_input):
     if (raw_input == None):
         raise ValueError("Input cannot be none")
