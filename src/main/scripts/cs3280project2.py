@@ -2,10 +2,12 @@
 
 import http.server
 
+from utils import ip_and_subnet_are_valid, get_network_address
+
 __author__ = 'Darrell Branch'
 __version__ = 'Fall 2020'
 
-class IpValidationServer(http.server.BaseHTTPRequestHandler):
+class NetAddressServer(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.log_message("path: %s", self.path)
@@ -13,15 +15,18 @@ class IpValidationServer(http.server.BaseHTTPRequestHandler):
             path = self.path
             self.log_message("resource: %s", path)
             resource = path[1:]
-            print(resource)
-            if not resource.startswith('operation'):
+            if not resource.startswith('subnet'):
                 self.log_message("resource: %s", path)
-                self.send_error(404, 'Resource must begin with: operation')
+                self.send_error(404, 'Resource must begin with: subnet')
 
 
-            start = len('operation') + 1
+            start = len('subnet') + 1
             query = resource[start:].split('&')
-            print(query)
+
+            inputIsValid = ip_and_subnet_are_valid(query)
+
+            if not inputIsValid:
+                self.bad_request("Invalid IP Address or Subnet Mask")
 
             body = self.process_and_respond(query)
             self.send_response(200)
@@ -32,16 +37,15 @@ class IpValidationServer(http.server.BaseHTTPRequestHandler):
         except Exception as exception:
             self.send_error(500, str(exception))
 
+    def bad_request(self, message):
+        self.send_error(400, message)          
+
     def process_and_respond(self, query):
-        '''
-        Processes content for valid query.
-        Parameters:
-        query - the parameters provided to the query
-        '''
-        body = 'Hello, ' + ' '.join(word.capitalize() for word in query) + '!'
+        networkAddress = get_network_address(query)
+        body = 'Network Address:     ' + networkAddress
         html = "<!DOCTYPE html><html>"
         html += "<head><title>"
-        html += "Response from L13Server"
+        html += "Response from Network Address Calculator"
         html += "</title></head>"
         html += "<body><p><h1>"
         html += body
@@ -54,6 +58,6 @@ class IpValidationServer(http.server.BaseHTTPRequestHandler):
 if __name__ == '__main__':
     PORT = 3280
     server_address = ('', PORT)
-    server = http.server.HTTPServer(server_address, IpValidationServer)
-    print('IP Address Validation Server running on port {}; Type <Ctrl-C> to stop server.'.format(PORT))
+    server = http.server.HTTPServer(server_address, NetAddressServer)
+    print('Network Address Calculator running on port {}; Type <Ctrl-C> to stop server.'.format(PORT))
     server.serve_forever()

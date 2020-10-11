@@ -1,5 +1,36 @@
 import re
 
+def ip_and_subnet_are_valid(query):
+    output = True
+    ip_address = query[0]
+    subnet_mask = query[1]
+
+    ip_version = get_ip_version(ip_address)
+
+    if ip_version == None:
+        output = False
+    else:
+        if ip_version == "IPV4":
+            output = is_valid_subnet_mask_ipv4(subnet_mask)
+        elif ip_version == "IPV6":
+            output = is_valid_subnet_mask_ipv6(subnet_mask)
+
+    return output
+
+def get_network_address(query):
+    ip_address = query[0]
+    subnet_mask = query[1]
+    ip_version = get_ip_version(ip_address)
+
+    output = ""
+
+    if ip_version == "IPV4":
+        output = calculate_subnet_ipv4(ip_address, subnet_mask)
+    elif ip_version == "IPV6":
+        output = calculate_subnet_ipv6(ip_address, subnet_mask)
+
+    return output
+
 def is_ipv4(raw_input):
     if (raw_input == None):
         raise ValueError("Input cannot be none")
@@ -27,10 +58,6 @@ def is_ipv6(raw_input):
 
     return output
 
-'''
-Returns the IP version: IPV4 or IPV6
-Returns None for invalid IP Address
-'''
 def get_ip_version(raw_input):
     if (raw_input == None):
         raise ValueError("Input cannot be none")
@@ -44,7 +71,7 @@ def get_ip_version(raw_input):
 
     return output
 
-def is_valid_subnet_mask(raw_input):
+def is_valid_subnet_mask_ipv4(raw_input):
     if (raw_input == None):
         raise ValueError("Input cannot be none")
 
@@ -57,6 +84,18 @@ def is_valid_subnet_mask(raw_input):
 
     if (is_ip_notation):
         output = True
+
+    return output
+
+def is_valid_subnet_mask_ipv6(raw_input):
+    if (raw_input == None):
+        raise ValueError("Input cannot be none")
+
+    value = int(raw_input)
+    output = True
+
+    if value < 0 or value > 128:
+        output = False
 
     return output
 
@@ -96,6 +135,7 @@ def get_segment_with_leading_zeroes(original_segment):
     return output_segment
 
 def get_ipv6_subnet_mask(prefix_length):
+    prefix_length = int(prefix_length)
     mask = ""
     for i in range(0, prefix_length, 4):
         mask = mask + "F"
