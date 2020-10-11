@@ -8,7 +8,21 @@ def is_ipv4(raw_input):
     ipv4_regex = re.compile(r'^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$')
     matched = ipv4_regex.match(raw_input)
     
-    if (matched == None):
+    if matched == None:
+        output = False
+
+    return output
+
+def is_ipv6(raw_input):
+    if (raw_input == None):
+        raise ValueError("Input cannot be none")
+
+    output = True
+    expanded_ipv6_address = expand_ipv6_address(raw_input)
+    ipv6_regex = re.compile(r'^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$')
+    matched = ipv6_regex.match(expanded_ipv6_address)
+
+    if matched == None:
         output = False
 
     return output
@@ -47,7 +61,7 @@ def calculate_subnet_ipv4(ip_address, subnet_mask):
     return string_representation
 
 def expand_ipv6_address(ip_address):
-    ip_address_with_placeholder = ip_address.replace("::", ":zeroes:")
+    ip_address_with_placeholder = ip_address.replace("::", ":zeroes:", 1)
     segments = ip_address_with_placeholder.split(":")
     expanded_segments = []
 
@@ -69,7 +83,6 @@ def expand_ipv6_address(ip_address):
 
     return ":".join(expanded_segments)
 
-
 def get_segment_with_leading_zeroes(original_segment):
     output_segment = ""
     if len(original_segment) < 4:
@@ -81,7 +94,6 @@ def get_segment_with_leading_zeroes(original_segment):
     output_segment = output_segment + original_segment
 
     return output_segment
-
 
 def get_ipv6_subnet_mask(prefix_length):
     mask = ""
@@ -95,4 +107,6 @@ def get_ipv6_subnet_mask(prefix_length):
 
     return ":".join(grouping)
     
-# def calculate_subnet_ipv6(ip_address, prefix_length):
+#def calculate_subnet_ipv6(ip_address, prefix_length):
+    #ipv6_mask = get_ipv6_subnet_mask(prefix_length)
+
