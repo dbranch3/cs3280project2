@@ -45,3 +45,46 @@ def calculate_subnet_ipv4(ip_address, subnet_mask):
     string_representation = ".".join(binary_subnet_segments)
 
     return string_representation
+
+def expand_ipv6_address(ip_address):
+    print(ip_address)
+    ip_address_with_placeholder = ip_address.replace("::", ":zeroes:")
+    print(ip_address_with_placeholder)
+    segments = ip_address_with_placeholder.split(":")
+    print(segments)
+    expanded_segments = []
+
+    while "" in segments: segments.remove("")
+
+    print(segments)
+
+    for i in range(len(segments)):
+        current_segment = segments[i]
+        new_segment = get_segment_with_leading_zeroes(current_segment)
+        expanded_segments.append(new_segment)
+            
+    num_zero_groups_missing = 8 - len(expanded_segments)
+
+    for i in range(len(expanded_segments)):
+        if expanded_segments[i] == "zeroes":
+            replacement_segment = "0000"
+            for j in range(num_zero_groups_missing):
+                replacement_segment = replacement_segment + ":0000"
+            expanded_segments[i] = replacement_segment
+
+    return ":".join(expanded_segments)
+
+
+def get_segment_with_leading_zeroes(original_segment):
+    output_segment = ""
+    if len(original_segment) < 4:
+        num_leading_zeroes = 4 - len(original_segment)
+
+        for i in range(num_leading_zeroes):
+            output_segment = output_segment + "0"
+
+    output_segment = output_segment + original_segment
+
+    return output_segment
+
+# def calculate_subnet_ipv6(ip_address, prefix_length):
