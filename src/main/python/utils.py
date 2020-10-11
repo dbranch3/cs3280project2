@@ -47,16 +47,11 @@ def calculate_subnet_ipv4(ip_address, subnet_mask):
     return string_representation
 
 def expand_ipv6_address(ip_address):
-    print(ip_address)
     ip_address_with_placeholder = ip_address.replace("::", ":zeroes:")
-    print(ip_address_with_placeholder)
     segments = ip_address_with_placeholder.split(":")
-    print(segments)
     expanded_segments = []
 
     while "" in segments: segments.remove("")
-
-    print(segments)
 
     for i in range(len(segments)):
         current_segment = segments[i]
@@ -87,4 +82,17 @@ def get_segment_with_leading_zeroes(original_segment):
 
     return output_segment
 
+
+def get_ipv6_subnet_mask(prefix_length):
+    mask = ""
+    for i in range(0, prefix_length, 4):
+        mask = mask + "F"
+        
+    for i in range(prefix_length, 128, 4):
+        mask = mask + "0"
+
+    grouping = [(mask[i:i+4]) for i in range(0, len(mask), 4)]
+
+    return ":".join(grouping)
+    
 # def calculate_subnet_ipv6(ip_address, prefix_length):
