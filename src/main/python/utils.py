@@ -29,7 +29,19 @@ def is_valid_subnet_mask(raw_input):
 
     return output
 
+def calculate_subnet_ipv4(ip_address, subnet_mask):
+    ipv4_regex = re.compile(r'^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$')
+    ip_segments = ipv4_regex.findall(ip_address)
+    subnet_mask_segments = ipv4_regex.findall(subnet_mask)
+    binary_subnet_segments = []
 
-#def validate_ip(raw_input):
-#def validate_subnet(raw_input):
-#def calculate_subnet(ip_address, subnet_mask):
+    for (i in range(4)):
+        binary_ip_octet = ip_segments[i]
+        binary_subnet_octet = subnet_mask_segments[i]
+        result_of_AND_operation = binary_ip_octet & binary_subnet_octet
+        decimal_form = int(result_of_AND_operation)
+        binary_subnet_segments.append(decimal_form)
+
+    string_representation = ".".join(binary_subnet_segments)
+
+    return string_representation
