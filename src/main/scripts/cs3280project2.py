@@ -1,3 +1,6 @@
+"""
+ This Script runs a HTTP Server that will respond with the Network Address given Ip and Subnet
+"""
 #!/usr/bin/env python
 
 import http.server
@@ -8,8 +11,10 @@ __author__ = 'Darrell Branch'
 __version__ = 'Fall 2020'
 
 class NetAddressServer(http.server.BaseHTTPRequestHandler):
+    """ Webserver Class """
 
     def do_GET(self):
+        """ Behavior for GET request """
         self.log_message("path: %s", self.path)
         try:
             path = self.path
@@ -23,9 +28,9 @@ class NetAddressServer(http.server.BaseHTTPRequestHandler):
             start = len('subnet') + 1
             query = resource[start:].split('&')
 
-            inputIsValid = ip_and_subnet_are_valid(query)
+            input_is_valid = ip_and_subnet_are_valid(query)
 
-            if not inputIsValid:
+            if not input_is_valid:
                 self.bad_request("Invalid IP Address or Subnet Mask")
 
             body = self.process_and_respond(query)
@@ -38,11 +43,13 @@ class NetAddressServer(http.server.BaseHTTPRequestHandler):
             self.send_error(500, str(exception))
 
     def bad_request(self, message):
-        self.send_error(400, message)          
+        """ Send client error for invalid response """
+        self.send_error(400, message)
 
     def process_and_respond(self, query):
-        networkAddress = get_network_address(query)
-        body = 'Network Address:     ' + networkAddress
+        """ Get newtwork portion and builds HTML response """
+        network_address = get_network_address(query)
+        body = 'Network Address:     ' + network_address
         html = "<!DOCTYPE html><html>"
         html += "<head><title>"
         html += "Response from Network Address Calculator"
@@ -59,5 +66,5 @@ if __name__ == '__main__':
     PORT = 3280
     server_address = ('', PORT)
     server = http.server.HTTPServer(server_address, NetAddressServer)
-    print('Network Address Calculator running on port {}; Type <Ctrl-C> to stop server.'.format(PORT))
+    print('NetAddress Calculator running on port {}; Type <Ctrl-C> to stop server.'.format(PORT))
     server.serve_forever()

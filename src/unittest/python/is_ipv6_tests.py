@@ -44,9 +44,3 @@ class IsIpv6Test(unittest.TestCase):
         output = is_ipv6(input)
 
         self.assertEqual(False, output)
-
-    def test_should_raise_error_for_invalid_input(self):
-        input = None
-
-        with self.assertRaises(ValueError):
-            is_ipv6(input)

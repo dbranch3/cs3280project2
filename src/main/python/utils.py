@@ -40,9 +40,6 @@ def is_ipv4(raw_input):
     """
     Returns True if the input is a valid IPV4 address.
     """
-    if raw_input is None:
-        raise ValueError("Input cannot be none")
-
     output = True
     ipv4_regex = re.compile(r'^([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})\.([0-9]{1,3})$')
     matched = ipv4_regex.match(raw_input)
@@ -56,9 +53,6 @@ def is_ipv6(raw_input):
     """
     Returns True if the input is a valid IPV6 address.
     """
-    if raw_input is None:
-        raise ValueError("Input cannot be none")
-
     output = True
     expanded_ipv6_address = expand_ipv6_address(raw_input)
     ipv6_regex = re.compile(r'^(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}$')
@@ -74,9 +68,6 @@ def get_ip_version(raw_input):
     Returns the version of the input IP address.
     Options are 'IPV4', 'IPV6', or 'None'
     """
-    if raw_input is None:
-        raise ValueError("Input cannot be none")
-
     output = None
 
     if is_ipv4(raw_input):
@@ -110,10 +101,10 @@ def is_valid_subnet_mask_ipv6(raw_input):
         raise ValueError("Input cannot be none")
 
     value = int(raw_input)
-    output = True
+    output = False
 
-    if value < 0 or value > 128:
-        output = False
+    if 0 <= value <= 128:
+        output = True
 
     return output
 

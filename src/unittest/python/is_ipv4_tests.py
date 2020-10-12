@@ -30,9 +30,3 @@ class IsIpv4Test(unittest.TestCase):
         output = is_ipv4(input)
 
         self.assertEqual(False, output)
-
-    def test_should_raise_error_for_invalid_input(self):
-        input = None
-
-        with self.assertRaises(ValueError):
-            is_ipv4(input)
