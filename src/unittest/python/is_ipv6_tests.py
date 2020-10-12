@@ -2,7 +2,7 @@ import unittest
 
 from utils import is_ipv6
 
-class IsIpv4Test(unittest.TestCase):
+class IsIpv6Test(unittest.TestCase):
     def test_should_return_true_for_min_address(self):
         input = "0:0:0:0:0:0:0:0"
 
